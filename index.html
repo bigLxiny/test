@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="res"></div>
     <script>
         function calculate24(a, b, c, d) {
   const nums = [a, b, c, d];
@@ -67,6 +68,7 @@
   return result !== null ? result.trim() : '无解';
 }
 console.log(calculate24(4,9,11,13))
+        document.getElementById('res').innerHTML(calculate24(4,9,11,13))
 
     </script>
 </body>
