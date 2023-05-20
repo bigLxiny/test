@@ -1,75 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>24点游戏</title>
 </head>
 <body>
-    <div id="res"></div>
-    <script>
-        function calculate24(a, b, c, d) {
-  const nums = [a, b, c, d];
-  const ops = ['+', '-', '*', '/'];
-  const permute = (arr) => {
-    if (arr.length === 1) {
-      return [arr];
-    }
-    const result = [];
-    for (let i = 0; i < arr.length; i++) {
-      const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
-      const permutations = permute(rest);
-      for (let j = 0; j < permutations.length; j++) {
-        result.push([arr[i], ...permutations[j]]);
-      }
-    }
-    return result;
-  };
-  const calculate = (a, b, op) => {
-    switch (op) {
-      case '+':
-        return a + b;
-      case '-':
-        return a - b;
-      case '*':
-        return a * b;
-      case '/':
-        return a / b;
-    }
-  };
-  const dfs = (nums, path) => {
-    if (nums.length === 1) {
-      if (nums[0] === 24) {
-        return path;
-      } else {
+  <p>请输入4个数字（1-13），每个数字只能使用1次：</p>
+  <div><input style="width: 100%;"type="number" id="num1" min="1" max="13"></div>
+  <div><input style="width: 100%;"type="number" id="num2" min="1" max="13"></div>
+  <div><input style="width: 100%;"type="number" id="num3" min="1" max="13"></div>
+  <div><input style="width: 100%;"type="number" id="num4" min="1" max="13"></div>
+  <button style="margin-top: 20px;" onclick="calculate()">计算</button>
+  <p id="result"></p>
+  <script>
+    function calculate() {
+      const num1 = parseInt(document.getElementById('num1').value);
+      const num2 = parseInt(document.getElementById('num2').value);
+      const num3 = parseInt(document.getElementById('num3').value);
+      const num4 = parseInt(document.getElementById('num4').value);
+      const nums = [num1, num2, num3, num4];
+      const ops = ['+', '-', '*', '/'];
+      const permute = (arr) => {
+        if (arr.length === 1) {
+          return [arr];
+        }
+        const result = [];
+        for (let i = 0; i < arr.length; i++) {
+          const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+          const permutations = permute(rest);
+          for (let j = 0; j < permutations.length; j++) {
+            result.push([arr[i], ...permutations[j]]);
+          }
+        }
+        return result;
+      };
+      const calculate = (a, b, op) => {
+        switch (op) {
+          case '+':
+            return a + b;
+          case '-':
+            return a - b;
+          case '*':
+            return a * b;
+          case '/':
+            return a / b;
+        }
+      };
+      const dfs = (nums, path) => {
+        if (nums.length === 1) {
+          if (nums[0] === 24) {
+            return path;
+          } else {
+            return null;
+          }
+        }
+        const permutations = permute(nums);
+        for (let i = 0; i < permutations.length; i++) {
+          const [a, b, ...rest] = permutations[i];
+          for (let j = 0; j < ops.length; j++) {
+            const op = ops[j];
+            if (op === '/' && b === 0) {
+              continue;
+            }
+            const result = calculate(a, b, op);
+            const newPath = `${a} ${op} ${b} = ${result}`;
+            const subResult = dfs([result, ...rest], `${path} ${newPath}`);
+            if (subResult !== null) {
+              return subResult;
+            }
+          }
+        }
         return null;
-      }
+      };
+      const result = dfs(nums, '');
+      document.getElementById('result').textContent = result !== null ? result.trim() : '无解';
     }
-    const permutations = permute(nums);
-    for (let i = 0; i < permutations.length; i++) {
-      const [a, b, ...rest] = permutations[i];
-      for (let j = 0; j < ops.length; j++) {
-        const op = ops[j];
-        if (op === '/' && b === 0) {
-          continue;
-        }
-        const result = calculate(a, b, op);
-        const newPath = `${a} ${op} ${b} = ${result}`;
-        const subResult = dfs([result, ...rest], `${path} ${newPath}`);
-        if (subResult !== null) {
-          return subResult;
-        }
-      }
-    }
-    return null;
-  };
-  const result = dfs(nums, '');
-  return result !== null ? result.trim() : '无解';
-}
-console.log(calculate24(4,9,11,13))
-        document.getElementById('res').innerHTML(calculate24(4,9,11,13))
-
-    </script>
+  </script>
 </body>
 </html>
